@@ -80,12 +80,32 @@ def parse2():
     soup = BeautifulSoup(src, 'lxml')
     prem = soup.find_all('div', class_='premier_item')
     # print(prem[0])
+    i = 0
     for item in prem:
-        print(item)
+        # print(item)
+        i += 1
+        print(i)
+
         print('name:', item.find('div', class_='textBlock').find('a').text)
+
         print('name_eng:', item.find('div', class_='textBlock').find('a').next_element.next_element.next_element.text)
+
         print('film_link:', 'https://www.kinopoisk.ru/'+ item.find('a').get('href'))
-        print('film_rating:', item.find('span', class_='ajax_rating'))
+
+        if item.find('span', class_='ajax_rating').find('u'):
+            film_rating = item.find('span', class_='ajax_rating').find('u').text.strip()
+        print('film_rating:', film_rating.partition('\xa0')[0])
+
+        print('wait_rating:', '-')
+
+        if item.find('span', class_='ajax_rating').find('b'):
+            votes = item.find('span', class_='ajax_rating').find('b').text.strip()
+        print('votes:', votes)
+
+        print('date:', item.find('div', class_='day').find('img'))
+
+        print('company:', '-')
+        print('genres:', '-')
         print('-'*10)
 
 parse2()
