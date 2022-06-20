@@ -108,4 +108,5 @@ def parse2():
         print('genres:', '-')
         print('-'*10)
 
+
 parse2()
