@@ -102,13 +102,22 @@ def parse2():
             votes = item.find('span', class_='ajax_rating').find('b').text.strip()
         print('votes:', votes)
 
-        print('date:', item.find('div', class_='day').find('img'))
+        print('date:', item.find('meta').get('content'))
 
-        print('company:', '-')
-        print('genres:', '-')
+        print('company:', item.find('s', class_='company').find('a').text)
+        print('genres:', item.find('div', class_='textBlock').find_all('span')[3].text)
+
         print('-'*10)
 
-
+        # name - название фильма
+        # name_eng - название фильма на английском
+        # film_link - ссылка на страницу фильма
+        # film_rating - рейтинг фильма(если есть)
+        # wait_rating - рейтинг ожидания(если есть)
+        # votes - количество голосов
+        # date - дата премьеры
+        # company - компания, выпускающая фильм
+        # genres - жанры фильма(массив)
 
 
 parse2()
