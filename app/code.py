@@ -63,51 +63,70 @@ def groups(data):
     return result
 
 
+# def req():
+#     url = 'https://www.kinopoisk.ru/premiere/ru/'
+#     headers = {
+#         'Accept': '*/*',
+#         'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0'
+#     }
+#
+#     for number in range(1, 10):
+#         req2 = requests.get(url=f'{url}page//{number}//', headers=headers)
+#         print(number, req2.url, req2.status_code)
+#         # with open('index.html', 'w') as f:
+#         #     f.write(req)
+#         soup = BeautifulSoup(req2.text, 'lxml')
+#         try:
+#             end = soup.find('div', class_='js-rum-hero'
+#                      ).find('td', class_='news').text
+#             break
+#         except Exception:
+#             pass
+
+
+
 def parse2():
-    # url = 'https://www.kinopoisk.ru/premiere/ru/'
-    # headers = {
-    #     'Accept': '*/*',
-    #     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0'
-    # }
-    #
-    # req = requests.get(url=url, headers=headers).text
-    # with open('index.html', 'w') as f:
-    #     f.write(req)
+    url = 'https://www.kinopoisk.ru/premiere/ru/'
+    headers = {
+        'Accept': '*/*',
+        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0'
+    }
 
-    with open('index.html', 'r') as f:
-        src = f.read()
-
-    soup = BeautifulSoup(src, 'lxml')
-    prem = soup.find_all('div', class_='premier_item')
-    # print(prem[0])
     i = 0
-    for item in prem:
-        # print(item)
-        i += 1
-        print(i)
+    for number in range(1, 10):
+        req2 = requests.get(url=f'{url}page//{number}//', headers=headers)
+        soup = BeautifulSoup(req2.text, 'lxml')
 
-        print('name:', item.find('div', class_='textBlock').find('a').text)
+        try:
+            end = soup.find('div', class_='js-rum-hero'
+                     ).find('td', class_='news').text
+            break
+        except Exception:
+            prem = soup.find_all('div', class_='premier_item')
 
-        print('name_eng:', item.find('div', class_='textBlock').find('a').next_element.next_element.next_element.text)
+            for item in prem:
+                i += 1
+                print(i)
+                print('name:', item.find('div', class_='textBlock').find('a').text)
+                print('name_eng:', item.find('div', class_='textBlock').find('a').next_element.next_element.next_element.text)
+                print('film_link:', 'https://www.kinopoisk.ru/'+ item.find('a').get('href'))
 
-        print('film_link:', 'https://www.kinopoisk.ru/'+ item.find('a').get('href'))
+                if item.find('span', class_='ajax_rating').find('u'):
+                    film_rating = item.find('span', class_='ajax_rating').find('u').text.strip()
+                print('film_rating:', film_rating.partition('\xa0')[0])
 
-        if item.find('span', class_='ajax_rating').find('u'):
-            film_rating = item.find('span', class_='ajax_rating').find('u').text.strip()
-        print('film_rating:', film_rating.partition('\xa0')[0])
+                print('wait_rating:', '-')
 
-        print('wait_rating:', '-')
+                if item.find('span', class_='ajax_rating').find('b'):
+                    votes = item.find('span', class_='ajax_rating').find('b').text.strip()
+                print('votes:', votes)
 
-        if item.find('span', class_='ajax_rating').find('b'):
-            votes = item.find('span', class_='ajax_rating').find('b').text.strip()
-        print('votes:', votes)
+                print('date:', item.find('meta').get('content'))
 
-        print('date:', item.find('meta').get('content'))
+                print('company:', item.find('s', class_='company').find('a').text)
+                print('genres:', item.find('div', class_='textBlock').find_all('span')[3].text)
 
-        print('company:', item.find('s', class_='company').find('a').text)
-        print('genres:', item.find('div', class_='textBlock').find_all('span')[3].text)
-
-        print('-'*10)
+                print('-'*10)
 
         # name - название фильма
         # name_eng - название фильма на английском
@@ -119,5 +138,9 @@ def parse2():
         # company - компания, выпускающая фильм
         # genres - жанры фильма(массив)
 
+def main():
+    parse2()
+    # req()
 
-parse2()
+if __name__ == '__main__':
+    main()
